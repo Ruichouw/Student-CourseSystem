@@ -35,6 +35,7 @@ public class StudentServiceImpl implements StudentService {
         // 设置默认密码
         if (student.getPassword() == null || student.getPassword().isEmpty()) {
             student.setPassword("123456");
+
         }
         return studentMapper.insert(student) > 0;
     }

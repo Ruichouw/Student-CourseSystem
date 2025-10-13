@@ -24,3 +24,7 @@ aliyun:
     endpoint: https://oss-cn-beijing.aliyuncs.com
     bucketName: javaweb-itjay
     region: cn-beijing
+
+server:
+  address: 0.0.0.0  # 关键配置：允许外部访问
+  port: 8080       # 可选：指定端口
