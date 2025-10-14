@@ -4,10 +4,10 @@ spring:
   #配置数据库的链接信息
   #固定的四项信息
   datasource:
-    url: jdbc:mysql://localhost:3306/student_course
+    url: jdbc:mysql://r.longfish.site:3306/student_course?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT&rewriteBatchedStatements=true
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: 1104957198
+    username: student_course
+    password: yP8#fZr@9Qk!vX2L
 
   #配置MyBatis的日志输出
 mybatis:
