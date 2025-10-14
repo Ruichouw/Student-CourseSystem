@@ -11,11 +11,11 @@ export default defineConfig({
     },
   },
   server: {
-    port: 5173,
+    port: 8322,
     open: true,
     proxy: {
       '/api': {
-        target: 'http://localhost:8080', // Spring Boot backend URL
+        target: 'http://localhost:8321', // Spring Boot backend URL
         changeOrigin: true,
         secure: false
       }
