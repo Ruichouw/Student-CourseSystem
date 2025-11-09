@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itjay.mapper.CourseMapper">
+    <resultMap id="BaseResultMap" type="com.itjay.pojo.Course">
+        <id column="course_id" property="courseId"/>
+        <result column="name" property="name"/>
+        <result column="credit" property="credit"/>
+        <result column="hours" property="hours"/>
+        <result column="teacher_id" property="teacherId"/>
+        <result column="description" property="description"/>
+        <result column="max_students" property="maxStudents"/>
+        <result column="current_students" property="currentStudents"/>
+        <result column="syllabus" property="syllabus"/>
+        <result column="textbook" property="textbook"/>
+        <result column="schedule_info" property="scheduleInfo"/>
+        <result column="status" property="status"/>
+        <result column="rejection_reason" property="rejectionReason"/>
+        <result column="teacher_name" property="teacherName"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        course_id, name, credit, hours, teacher_id, description, max_students, current_students,
+        syllabus, textbook, schedule_info, status, rejection_reason
+    </sql>
+
+    <select id="selectById" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM course
+        WHERE course_id = #{courseId}
+    </select>
+
+    <select id="getById" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM course
+        WHERE course_id = #{courseId}
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM course
+    </select>
+
+    <select id="selectAllWithTeacher" resultMap="BaseResultMap">
+        SELECT c.*, t.name as teacher_name
+        FROM course c
+        LEFT JOIN teacher t ON c.teacher_id = t.teacher_id
+    </select>
+
+    <select id="selectByCondition" parameterType="com.itjay.pojo.Course" resultMap="BaseResultMap">
+        SELECT c.*, t.name as teacher_name
+        FROM course c
+        LEFT JOIN teacher t ON c.teacher_id = t.teacher_id
+        <where>
+            <if test="courseId != null and courseId != ''">
+                AND c.course_id = #{courseId}
+            </if>
+            <if test="name != null and name != ''">
+                AND c.name LIKE CONCAT('%', #{name}, '%')
+            </if>
+            <if test="teacherId != null and teacherId != ''">
+                AND c.teacher_id = #{teacherId}
+            </if>
+            <if test="status != null and status != ''">
+                AND c.status = #{status}
+            </if>
+            <!-- Add other conditions for new fields if needed for search -->
+        </where>
+    </select>
+
+    <insert id="insert" parameterType="com.itjay.pojo.Course">
+        INSERT INTO course (
+            course_id, name, credit, hours, teacher_id, description, max_students, current_students,
+            syllabus, textbook, schedule_info, status, rejection_reason
+        )
+        VALUES (
+            #{courseId}, #{name}, #{credit}, #{hours}, #{teacherId}, #{description}, #{maxStudents}, #{currentStudents},
+            #{syllabus}, #{textbook}, #{scheduleInfo}, #{status}, #{rejectionReason}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.itjay.pojo.Course">
+        UPDATE course
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="credit != null">credit = #{credit},</if>
+            <if test="hours != null">hours = #{hours},</if>
+            <if test="teacherId != null">teacher_id = #{teacherId},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="maxStudents != null">max_students = #{maxStudents},</if>
+            <if test="currentStudents != null">current_students = #{currentStudents},</if>
+            <if test="syllabus != null">syllabus = #{syllabus},</if>
+            <if test="textbook != null">textbook = #{textbook},</if>
+            <if test="scheduleInfo != null">schedule_info = #{scheduleInfo},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="rejectionReason != null">rejection_reason = #{rejectionReason},</if>
+        </set>
+        WHERE course_id = #{courseId}
+    </update>
+
+    <delete id="deleteById" parameterType="java.lang.String">
+        DELETE FROM course
+        WHERE course_id = #{courseId}
+    </delete>
+
+    <update id="updateCurrentStudents" parameterType="java.lang.String">
+        UPDATE course c
+        SET c.current_students = (
+            SELECT COUNT(*) FROM course_selection cs WHERE cs.course_id = c.course_id
+        )
+        WHERE c.course_id = #{courseId}
+    </update>
+
+    <select id="getByStatus" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT c.*, t.name as teacher_name
+        FROM course c
+        LEFT JOIN teacher t ON c.teacher_id = t.teacher_id
+        WHERE c.status = #{status}
+    </select>
+
+    <select id="getByTeacherId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT c.*, t.name as teacher_name
+        FROM course c
+        LEFT JOIN teacher t ON c.teacher_id = t.teacher_id
+        WHERE c.teacher_id = #{teacherId}
+    </select>
+    
+    <select id="count" resultType="int">
+        SELECT COUNT(*) FROM course
+    </select>
+
+    <select id="getPopularCourses" parameterType="int" resultMap="BaseResultMap">
+        SELECT c.*, t.name as teacher_name
+        FROM course c
+        LEFT JOIN teacher t ON c.teacher_id = t.teacher_id
+        ORDER BY c.current_students DESC
+        LIMIT #{limit}
+    </select>
+</mapper> 

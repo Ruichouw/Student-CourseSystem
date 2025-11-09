@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itjay.mapper.SystemConfigMapper">
+    <resultMap id="SystemConfigResultMap" type="com.itjay.pojo.SystemConfig">
+        <id column="id" property="id"/>
+        <result column="course_selection_start_time" property="courseSelectionStartTime"/>
+        <result column="course_selection_end_time" property="courseSelectionEndTime"/>
+    </resultMap>
+
+    <select id="getConfig" resultMap="SystemConfigResultMap">
+        SELECT id, course_selection_start_time, course_selection_end_time
+        FROM system_config
+        WHERE id = 1 <!-- Assuming single row with id = 1 -->
+    </select>
+
+    <update id="updateConfig" parameterType="com.itjay.pojo.SystemConfig">
+        UPDATE system_config SET
+        course_selection_start_time = #{courseSelectionStartTime},
+        course_selection_end_time = #{courseSelectionEndTime}
+        WHERE id = 1 <!-- Assuming single row with id = 1 -->
+    </update>
+</mapper> 

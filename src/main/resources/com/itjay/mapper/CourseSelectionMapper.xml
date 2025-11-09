@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itjay.mapper.CourseSelectionMapper">
+    <resultMap id="BaseResultMap" type="com.itjay.pojo.CourseSelection">
+        <id column="id" property="id"/>
+        <result column="student_id" property="studentId"/>
+        <result column="course_id" property="courseId"/>
+        <result column="selection_time" property="selectionTime"/>
+        <result column="score" property="score"/>
+        <result column="student_name" property="studentName"/>
+        <result column="course_name" property="courseName"/>
+        <result column="credit" property="credit"/>
+        <result column="teacher_name" property="teacherName"/>
+        <result column="gender" property="gender"/>
+        <result column="age" property="age"/>
+        <result column="department" property="department"/>
+        <result column="major" property="major"/>
+        <result column="className" property="className"/>
+        <result column="email" property="email"/>
+        <result column="phone" property="phone"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, student_id, course_id, selection_time, score
+    </sql>
+
+    <select id="selectById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM course_selection
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectByStudentId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT cs.*, c.name as course_name, c.credit, t.name as teacher_name
+        FROM course_selection cs
+        JOIN course c ON cs.course_id = c.course_id
+        LEFT JOIN teacher t ON c.teacher_id = t.teacher_id
+        WHERE cs.student_id = #{studentId}
+    </select>
+
+    <select id="selectByCourseId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT cs.*, s.name as student_name
+        FROM course_selection cs
+        JOIN student s ON cs.student_id = s.student_id
+        WHERE cs.course_id = #{courseId}
+    </select>
+
+    <select id="selectByStudentAndCourse" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM course_selection
+        WHERE student_id = #{studentId} AND course_id = #{courseId}
+    </select>
+
+    <insert id="insert" parameterType="com.itjay.pojo.CourseSelection" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO course_selection (
+            student_id, course_id, selection_time
+        )
+        VALUES (
+            #{studentId}, #{courseId}, NOW()
+        )
+    </insert>
+
+    <update id="update" parameterType="com.itjay.pojo.CourseSelection">
+        UPDATE course_selection
+        <set>
+            <if test="score != null">score = #{score},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById" parameterType="java.lang.Integer">
+        DELETE FROM course_selection
+        WHERE id = #{id}
+    </delete>
+
+    <delete id="deleteByStudentAndCourse">
+        DELETE FROM course_selection
+        WHERE student_id = #{studentId} AND course_id = #{courseId}
+    </delete>
+
+    <select id="selectGradesByStudentId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT cs.*, c.name as course_name, c.credit, t.name as teacher_name
+        FROM course_selection cs
+        JOIN course c ON cs.course_id = c.course_id
+        LEFT JOIN teacher t ON c.teacher_id = t.teacher_id
+        WHERE cs.student_id = #{studentId} AND cs.score IS NOT NULL
+    </select>
+    
+    <select id="getStudentsByCourseId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT cs.*, s.name as student_name, s.gender, s.age, s.department, s.major, s.class_name as className, s.email, s.phone
+        FROM course_selection cs
+        JOIN student s ON cs.student_id = s.student_id
+        WHERE cs.course_id = #{courseId}
+    </select>
+    
+    <update id="updateScore">
+        UPDATE course_selection
+        SET score = #{score}
+        WHERE student_id = #{studentId} AND course_id = #{courseId}
+    </update>
+    
+    <!-- 统计选课总数 -->
+    <select id="count" resultType="int">
+        SELECT COUNT(*) FROM course_selection
+    </select>
+</mapper> 

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itjay.mapper.TeacherMapper">
+    <!-- 教师登录 -->
+    <select id="login" resultType="com.itjay.pojo.Teacher">
+        SELECT * FROM teacher WHERE teacher_id = #{teacherId} AND password = #{password}
+    </select>
+    
+    <!-- 根据ID查询教师 -->
+    <select id="getById" resultType="com.itjay.pojo.Teacher">
+        SELECT * FROM teacher WHERE teacher_id = #{teacherId}
+    </select>
+    
+    <!-- 查询所有教师 -->
+    <select id="getAll" resultType="com.itjay.pojo.Teacher">
+        SELECT * FROM teacher
+    </select>
+    
+    <!-- 插入教师 -->
+    <insert id="insert" parameterType="com.itjay.pojo.Teacher">
+        INSERT INTO teacher (teacher_id, name, password, email, phone, department, title)
+        VALUES (#{teacherId}, #{name}, #{password}, #{email}, #{phone}, #{department}, #{title})
+    </insert>
+    
+    <!-- 更新教师信息 -->
+    <update id="update" parameterType="com.itjay.pojo.Teacher">
+        UPDATE teacher
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="password != null">password = #{password},</if>
+            <if test="email != null">email = #{email},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="department != null">department = #{department},</if>
+            <if test="title != null">title = #{title},</if>
+        </set>
+        WHERE teacher_id = #{teacherId}
+    </update>
+    
+    <!-- 删除教师 -->
+    <delete id="delete">
+        DELETE FROM teacher WHERE teacher_id = #{teacherId}
+    </delete>
+    
+    <!-- 统计教师总数 -->
+    <select id="count" resultType="int">
+        SELECT COUNT(*) FROM teacher
+    </select>
+</mapper> 
