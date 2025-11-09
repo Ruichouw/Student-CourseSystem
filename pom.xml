@@ -28,6 +28,10 @@
     </scm>
     <properties>
         <java.version>21</java.version>
+        <java.version>17</java.version>
+        <!--   SonarQube配置   -->
+        <sonar.host.url>http://localhost:9000</sonar.host.url>
+        <sonar.login>squ_8f1f4e3838f63236851e1a6afc1c2693a0a35ebc</sonar.login>
     </properties>
     <dependencies>
         <dependency>
@@ -49,6 +53,7 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.30</version>  <!-- 或你选择的稳定版本 -->
+            <optional>true</optional>   <!-- 或你选择的稳定版本 -->
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -100,6 +105,12 @@
             <version>0.11.5</version>
 
         </dependency>
+
+        <dependency>   <!-- 单元测试JUnit -->
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -124,6 +135,8 @@
                 <configuration>
                     <source>21</source>
                     <target>21</target>
+                    <source>17</source>
+                    <target>17</target>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.projectlombok</groupId>
@@ -132,6 +145,46 @@
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
+            </plugin>
+
+            <plugin>        <!-- jacoco测试 -->
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.8</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>check</id>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <rule>
+                                    <element>BUNDLE</element>
+                                    <limits>
+                                        <limit>
+                                            <counter>LINE</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.6</minimum> <!-- 60%覆盖率要求 -->
+                                        </limit>
+                                    </limits>
+                                </rule>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
         </plugins>

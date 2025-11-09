@@ -149,7 +149,6 @@ const handleSelect = async (course) => {
         style="width: 300px"
       />
     </div>
-
     <el-card shadow="hover" class="course-card">
       <el-table
         :data="filteredCourses"
